@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Spam Classifier</title>
+
+<style>
+/* ============================================================
+                       GLOBAL PAGE STYLE
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: linear-gradient(125deg, #0b0f25, #182952, #0f3057, #2b5876, #4e4376);
+    background-size: 500% 500%;
+    animation: gradientAnimation 15s ease infinite;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: white;
+}
+
+/* Beautiful moving gradient */
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ============================================================
+                       CENTER CONTAINER
+   ============================================================ */
+.container {
+    max-width: 700px;
+    margin: 80px auto;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(18px);
+    border-radius: 25px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+    animation: fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(50px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+                      HEADER TITLE + ANIMATION
+   ============================================================ */
+.title {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 10px;
+    letter-spacing: 1.5px;
+    animation: titleDrop 1.4s ease;
+}
+
+@keyframes titleDrop {
+    from { transform: translateY(-40px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 25px;
+    opacity: 0.85;
+    font-style: italic;
+}
+
+/* ============================================================
+                         TEXTAREA STYLE
+   ============================================================ */
+textarea {
+    width: 100%;
+    height: 170px;
+    padding: 15px;
+    border-radius: 15px;
+    border: none;
+    outline: none;
+    resize: none;
+    font-size: 17px;
+    background: rgba(0,0,0,0.35);
+    color: white;
+    transition: 0.3s ease;
+}
+
+textarea:focus {
+    background: rgba(0,0,0,0.55);
+    transform: scale(1.02);
+}
+
+/* ============================================================
+                            BUTTON STYLE
+   ============================================================ */
+button {
+    margin-top: 25px;
+    width: 100%;
+    padding: 16px;
+    border-radius: 15px;
+    font-size: 18px;
+    border: none;
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: 0.4s ease;
+    letter-spacing: 1px;
+}
+
+button:hover {
+    transform: scale(1.04);
+    box-shadow: 0px 0px 15px rgba(255, 65, 108, 0.9);
+}
+
+/* ============================================================
+                         RESULT BOX STYLING
+   ============================================================ */
+.result-box {
+    margin-top: 35px;
+    padding: 25px;
+    font-size: 26px;
+    text-align: center;
+    border-radius: 15px;
+    font-weight: bold;
+    animation: popUp 0.8s ease;
+}
+
+@keyframes popUp {
+    from { transform: scale(0.5); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+.spam {
+    background: rgba(255, 0, 0, 0.25);
+    border: 2px solid #ff2e63;
+    color: #ffb3b3;
+}
+
+.ham {
+    background: rgba(0, 255, 0, 0.25);
+    border: 2px solid #00ff99;
+    color: #dbffe7;
+}
+
+/* ============================================================
+                      FLOATING PARTICLE ANIMATION
+   ============================================================ */
+.particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 50%;
+    animation: floatUp 6s infinite linear;
+}
+
+@keyframes floatUp {
+    from { transform: translateY(0); opacity: 1; }
+    to   { transform: translateY(-800px); opacity: 0; }
+}
+
+/* create many floating particles */
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+                        FLOATING PARTICLES
+     ============================================================ -->
+<script>
+for (let i = 0; i < 50; i++) {
+    let p = document.createElement("div");
+    p.classList.add("particle");
+    p.style.left = Math.random() * window.innerWidth + "px";
+    p.style.top = Math.random() * window.innerHeight + "px";
+    p.style.animationDuration = (4 + Math.random() * 6) + "s";
+    p.style.opacity = Math.random();
+    document.body.appendChild(p);
+}
+</script>
+
+<!-- ============================================================
+                        MAIN CONTAINER
+     ============================================================ -->
+<div class="container">
+
+    <h1 class="title">📧 AI Email Spam Classifier</h1>
+    <p class="subtitle">Developed by Sachin Kumar @ AIT PUNE</p>
+
+    <form method="POST">
+        <textarea name="mail" id="mail" placeholder="Type or paste your email message here..."></textarea>
+
+        <button type="submit">Analyze Email</button>
+    </form>
+
+    <!-- ======= RESULT COMING FROM FLASK BACKEND ======== -->
+    {% if classify %}
+        {% if classify == "Spam" %}
+            <div class="result-box spam">🚨 This Email is SPAM</div>
+        {% else %}
+            <div class="result-box ham">✔ This Email is HAM (Safe)</div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<!-- ============================================================
+              TYPING EFFECT (ENHANCED FRONT-END UX)
+     ============================================================ -->
+<script>
+const placeholderText = [
+    "Your Amazon package has been shipped...",
+    "Congratulations! You won $10,000!",
+    "Update your bank account details immediately...",
+    "Reminder: Your subscription will expire soon...",
+    "You have received a new login request..."
+];
+
+let mailBox = document.getElementById("mail");
+let index = 0;
+
+function typeEffect() {
+    if (!mailBox.value) {  
+        let text = placeholderText[index];
+        let i = 0;
+
+        let typer = setInterval(() => {
+            mailBox.placeholder = text.substring(0, i);
+            i++;
+
+            if (i > text.length) {
+                clearInterval(typer);
+                setTimeout(() => {
+                    index = (index + 1) % placeholderText.length;
+                    typeEffect();
+                }, 2000);
+            }
+        }, 80);
+    }
+}
+
+typeEffect();
+</script>
+
+</body>
+</html>
